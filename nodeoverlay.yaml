@@ -1,0 +1,13 @@
+apiVersion: karpenter.sh/v1alpha1
+kind: NodeOverlay
+metadata:
+  name: overlay-test-all
+spec:
+  weight: 10
+  requirements:
+    - key: node.kubernetes.io/instance-type
+      operator: Exists
+    - key: karpenter.sh/capacity-type
+      operator: Exists
+
+  priceAdjustment: "-10%"

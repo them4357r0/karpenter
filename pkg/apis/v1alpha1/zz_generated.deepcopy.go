@@ -22,7 +22,7 @@ package v1alpha1
 
 import (
 	"github.com/awslabs/operatorpkg/status"
-	"k8s.io/api/core/v1"
+	v1 "k8s.io/api/core/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 )
 
@@ -138,6 +138,21 @@ func (in *NodeOverlayStatus) DeepCopyInto(out *NodeOverlayStatus) {
 		for i := range *in {
 			(*in)[i].DeepCopyInto(&(*out)[i])
 		}
+	}
+	if in.AffectedNodePools != nil {
+		in, out := &in.AffectedNodePools, &out.AffectedNodePools
+		*out = make([]string, len(*in))
+		copy(*out, *in)
+	}
+	if in.ImpactedInstanceTypeCount != nil {
+		in, out := &in.ImpactedInstanceTypeCount, &out.ImpactedInstanceTypeCount
+		*out = new(int32)
+		**out = **in
+	}
+	if in.RunningInstanceCount != nil {
+		in, out := &in.RunningInstanceCount, &out.RunningInstanceCount
+		*out = new(int32)
+		**out = **in
 	}
 }
 

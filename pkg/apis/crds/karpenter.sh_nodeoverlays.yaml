@@ -108,6 +108,12 @@ spec:
                           Represents a key's relationship to a set of values.
                           Valid operators are In, NotIn, Exists, DoesNotExist. Gt, Lt, Gte, and Lte.
                         enum:
+                          - In
+                          - NotIn
+                          - Exists
+                          - DoesNotExist
+                          - Gt
+                          - Lt
                           - Gte
                           - Lte
                           - In
@@ -161,6 +167,12 @@ spec:
             status:
               description: NodeOverlayStatus defines the observed state of NodeOverlay
               properties:
+                affectedNodePools:
+                  description: affectedNodePools lists the names of NodePools to which this overlay is applied.
+                  items:
+                    type: string
+                  type: array
+                  x-kubernetes-list-type: atomic
                 conditions:
                   description: Conditions contains signals for health and readiness
                   items:
@@ -217,6 +229,16 @@ spec:
                       - type
                     type: object
                   type: array
+                impactedInstanceTypeCount:
+                  description: impactedInstanceTypeCount is the total number of instance types across all NodePools that are modified by this overlay.
+                  format: int32
+                  type: integer
+                runningInstanceCount:
+                  description: |-
+                    runningInstanceCount is the total number of actual running nodes/instances that verify the overlay's criteria.
+                    This provides a real-time view of the overlay's impact on the current cluster.
+                  format: int32
+                  type: integer
               type: object
           required:
             - spec

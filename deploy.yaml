@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodeoverlay-demo
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: nodeoverlay-demo
+  template:
+    metadata:
+      labels:
+        app: nodeoverlay-demo
+    spec:
+      containers:
+        - name: pause
+          image: public.ecr.aws/eks-distro/kubernetes/pause:3.5
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "512Mi"

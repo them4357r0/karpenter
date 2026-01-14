@@ -49,6 +49,8 @@ import (
 	. "sigs.k8s.io/karpenter/pkg/test/expectations"
 	testv1alpha1 "sigs.k8s.io/karpenter/pkg/test/v1alpha1"
 	. "sigs.k8s.io/karpenter/pkg/utils/testing"
+
+	"k8s.io/client-go/tools/record"
 )
 
 var (
@@ -61,6 +63,7 @@ var (
 	fakeClock             *clock.FakeClock
 	nodeOverlayController *nodeoverlay.Controller
 	store                 *nodeoverlay.InstanceTypeStore
+	recorder              *record.FakeRecorder
 )
 
 func TestNodeOverlay(t *testing.T) {
@@ -75,14 +78,16 @@ var _ = BeforeSuite(func() {
 	store = nodeoverlay.NewInstanceTypeStore()
 	fakeClock = clock.NewFakeClock(time.Now())
 	cluster = state.NewCluster(fakeClock, env.Client, cloudProvider)
-	nodeOverlayController = nodeoverlay.NewController(env.Client, cloudProvider, store, cluster)
 })
 
 var _ = BeforeEach(func() {
 	nodePool = test.NodePool()
 	nodePoolTwo = test.NodePool()
 	cloudProvider.Reset()
+
 	store.Reset()
+	recorder = record.NewFakeRecorder(10000)
+	nodeOverlayController = nodeoverlay.NewController(env.Client, cloudProvider, store, cluster, recorder)
 
 	cloudProvider.InstanceTypes = []*cloudprovider.InstanceType{
 		fake.NewInstanceType(fake.InstanceTypeOptions{
